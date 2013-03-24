@@ -1,7 +1,8 @@
 class ProductsController < ApplicationController
 
 	def index
-		@products = Product.includes(:user).all
+		@products = Product.includes(:user).first(20)
+    @sum_price = Product.sum(:price).to_f
 	end
 
 	def create
@@ -33,15 +34,15 @@ class ProductsController < ApplicationController
 	def update
   	@product = Product.where(:id => params[:id]).first
 
- 		respond_to do |format|
+    respond_to do |format|
       if @product.update_attributes(params[:product])
-    		format.html { redirect_to :back, :notice => 'Product was successfully updated.' }
-    		format.json { render json: @product }
+        format.html { redirect_to :back, :notice => 'Product was successfully updated.' }
+        format.json { render json: @product }
       else
-      	format.html { render action: "edit" }
-      	format.json { render json: @product.errors, :status => :unprocessable_entity }
+        format.html { render action: "edit" }
+        format.json { render json: @product.errors, :status => :unprocessable_entity }
       end
-  	end
+    end
 	end
 
 	def destroy
